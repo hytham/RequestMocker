@@ -15,3 +15,6 @@ services.AddRequestMocker(x => {
 ```
 2) Add the ``` app.UseRequestMocker(); ``` to the Configuration function as the first line. This is important since this will overtake any routing, if there is no match found in the routing table it will pass-it to the next part of the pipeline else it will intercept it and replay the assigned object with that rout
 
+# Contribution
+If you like to contribute to this code please feel free to contact me at halobydi@galaxe.com, this is an ingoing work
+
