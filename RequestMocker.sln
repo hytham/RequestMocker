@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequestMockerDemo", "RequestMockerDemo\RequestMockerDemo.csproj", "{130217DE-4074-4960-991C-2D3DFD710EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestMockerDemo", "RequestMockerDemo\RequestMockerDemo.csproj", "{130217DE-4074-4960-991C-2D3DFD710EAF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestMocker", "RequestMocker\RequestMocker.csproj", "{B8D73631-694A-4DA0-B352-DA41EA5B7463}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8D27B55A-3209-47AA-B6F3-838C9485ED45}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9AF5506B-A9E2-4519-9D20-435E41CAF91E}"
+	ProjectSection(SolutionItems) = preProject
+		config.yml = config.yml
 	EndProjectSection
 EndProject
 Global
@@ -29,6 +34,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9AF5506B-A9E2-4519-9D20-435E41CAF91E} = {8D27B55A-3209-47AA-B6F3-838C9485ED45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D975D516-F26B-43DC-9207-8921094FCEEA}
