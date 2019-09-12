@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/hytham/RequestMocker/tree/master.svg?style=svg)](https://circleci.com/gh/hytham/RequestMocker/tree/master)
+
 # Request Mocker
 This is a simple package that will allow to mock the API endpoint at runtime.
 
