@@ -9,7 +9,14 @@ jobs:
       - checkout
 
       - run:
-          name: Restor packages
+        name: Install Nuget packages
+        command:
+            nuget restore
+            
+            
+
+      - run:
+          name: Restore packages
           command: 
               dotnet restore
 
