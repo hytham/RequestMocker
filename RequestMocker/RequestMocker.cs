@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RequestMocker
@@ -53,10 +54,10 @@ namespace RequestMocker
         /// <param name="context">The Http Context</param>
         /// <param name="mockedRouteingTable">The routing table</param>
         /// <returns></returns>
-        private static string TestRequest(HttpContext context, Dictionary<string, Tuple<HttpMethod, object>> mockedRouteingTable)
+        public static string TestRequest(HttpContext context, Dictionary<string, Tuple<HttpMethod, object>> mockedRouteingTable)
         {
-
-            var route = mockedRouteingTable.Keys.FirstOrDefault(x => x.Equals(context.Request.Path.Value.Trim().ToLower()));
+            
+            var route = mockedRouteingTable.Keys.FirstOrDefault(x => Regex.IsMatch(context.Request.Path.Value.Trim().ToLower(),x));
 
             if (route != null)
             {

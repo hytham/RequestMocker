@@ -19,6 +19,12 @@ namespace RequestMocker
         {
             mockedRouteingTable = new Dictionary<string, Tuple<HttpMethod, object>>();
         }
+        /// <summary>
+        /// Map the giving route regular expression and method to the expected response
+        /// </summary>
+        /// <param name="method">The request Method</param>
+        /// <param name="route">The request route</param>
+        /// <param name="response">The response if the mapping is success</param>
         public void Map(HttpMethod method, string route, object response)
         {
             mockedRouteingTable.Add(route.ToLower(), Tuple.Create(method, response));
