@@ -8,9 +8,17 @@ jobs:
       - checkout
 
       - run:
-          name: Greeting
-          command: echo Hello, world.
+          name: Restor packages
+          command: dotnet restore
 
       - run:
-          name: Print the Current Time
-          command: date
+          name: Build 
+          command: dotnet build
+
+      - run:
+            name: Test
+            command: dotnet test
+
+      -run:
+            name: Packing
+            command: dotnet pack
