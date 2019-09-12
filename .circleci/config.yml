@@ -19,6 +19,6 @@ jobs:
             name: Test
             command: dotnet test
 
-      -run:
+      - run:
             name: Packing
             command: dotnet pack
