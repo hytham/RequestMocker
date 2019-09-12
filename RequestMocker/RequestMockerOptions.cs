@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RequestMocker
 {
@@ -30,6 +22,6 @@ namespace RequestMocker
             mockedRouteingTable.Add(route.ToLower(), Tuple.Create(method, response));
         }
 
-       
+
     }
 }
