@@ -4,7 +4,13 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Version>1.0.0.2</Version>
     <Description>This is a simple Request Mocker that will hep Fronted developer test endpoint till the actual endpoint is complete</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Product>RequestMocker</Product>
+    <PackageId>RequestMocker</PackageId>
+    <PackageReleaseNotes>starting point</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <Company>RequestMocker</Company>
+    <Authors>RequestMocker</Authors>
   </PropertyGroup>
 
   <ItemGroup>

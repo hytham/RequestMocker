@@ -47,7 +47,7 @@ namespace RequestMocker
         /// <returns>The invoked Task</returns>
         public async Task Invoke(HttpContext httpContext)
         {
-            var matchedRequest = TestRequest(httpContext, _options.mockedRouteingTable);
+            var matchedRequest = TestRequest(httpContext, _options.MockedRouteingTable);
             if (string.IsNullOrEmpty(matchedRequest))
             {
                 await this._next.Invoke(httpContext);
