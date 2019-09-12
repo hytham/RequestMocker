@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9AF5506B-A9E2-4519-9D20-435E41CAF91E}"
 	ProjectSection(SolutionItems) = preProject
 		config.yml = config.yml
+		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestMockerUnitTest", "RequestMockerUnitTest\RequestMockerUnitTest.csproj", "{D09981A3-4D56-4EF0-AB6D-5CEF7FB90B5B}"

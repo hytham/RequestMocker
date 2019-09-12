@@ -1,0 +1,257 @@
+namespace RxSense.BO.DataLoad.Loaders
+{
+    using log4net;
+    using RxSense.DAL;
+    using RxSense.Models.DB;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    public class AdminFeeLoader : BaseLoader, ILoader<AdminFeeModel>
+    {
+        public class AdminFeeRow
+        {
+            public string AF_SET_NAME { set; get; }
+            public string AF_SET_DESC { set; get; }
+            public string TIER_SET_TYPE { set; get; }
+            public string AF_RULE_DESCRIPTION { set; get; }
+            public string EFF_DATE { set; get; }
+            public string END_DATE { set; get; }
+            public string MULTI_SOURCE_CODE { set; get; }
+            public decimal AF_TIER { set; get; }
+            public string NETWORK_NAME { set; get; }
+            public string PRODUCT_LIST { set; get; }
+            public decimal ADMIN_FEE { set; get; }
+            public string DATE_CONFLICT { set; get; }
+            public bool IsSuccess { get; internal set; }
+            public string ReasonCode { get; internal set; }
+
+        }
+        public List<string> OptionalColumns => new List<string> { "" };
+
+        public Type LoaderRowType => typeof(AdminFeeRow);
+
+        private int errorCount;
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(AdminFeeLoader));
+
+        public Dictionary<string, object> Load(IEnumerable<object> items, bool fullFile, string email)
+        {
+            StringBuilder sb = new StringBuilder();
+            var records = items.Cast<AdminFeeRow>().ToList();
+
+            var orderedRecords = records
+                .Select((record, index) => new KeyValuePair<int, AdminFeeRow>(index, record))                
+                .ToList();
+
+            RxSenseDb db = null;
+            try
+            {
+                for (int i=0;i<records.Count;i++)
+                {
+                    var fileRow = i + 1;
+                    try {
+                        var record = records[i];
+                        ValidateRecord(record);
+                        DateTime.TryParseExact(record.EFF_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime StartDate);
+                        DateTime.TryParseExact(record.END_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime EndDate);
+
+                       
+
+                        var item = new AdminFeeModel
+                        {
+                            NetworkId = NetworkBO.GetNetworkForName(record.NETWORK_NAME),
+                            FormularyId = FormularyBO.GetFormualryByName(record.PRODUCT_LIST),
+                            Name = record.AF_SET_NAME,
+                            Description=record.AF_SET_DESC,
+                            StartDate=StartDate,
+                            EndDate=EndDate,
+                            Amount = record.ADMIN_FEE,
+                            
+                        };
+                        var conflicts = DBGeneric.GetConflicts<AdminFeeModel>(item).ToList();
+
+                        AdminFeeBO.DeactivateRecords(conflicts);
+                        db = DataLoader.AddToDb(db, item, fileRow * 2, 20);
+                        if (record.DATE_CONFLICT.ToUpper().Trim().Equals("END DATE"))
+                        {
+                            foreach (var c in conflicts)
+                            {
+                                c.IsActive = true;
+                                c.EndDate = StartDate;
+                                c.ModifiedDate = DateTime.UtcNow;
+                                db = DataLoader.AddToDb(db, c, fileRow * 2 + 1, 20);
+                            }
+                        }
+                        records[i].IsSuccess = true;
+
+                    }
+                    catch (FileUploadException ex)
+                    {
+                        errorCount++;
+
+                        records[i].IsSuccess = false;
+                        records[i].ReasonCode = ex.Message;
+                        if (errorCount <= 100)
+                        {
+                            sb.AppendLine($"Row {i + 1}, {ex.Message} <br/>");
+                        }
+                        else if (errorCount == 101)
+                        {
+                            sb.AppendLine("<b>Only the first 100 messages are included in the email. Please check Loggly for all messages.</b>");
+                            Logger.Error(ex.Message);
+                        }
+                        else
+                        {
+                            Logger.Error(ex.Message);
+                        }
+                    }
+                }
+
+            }
+            finally
+            {
+                if (db != null)
+                    db.Dispose();
+            }
+            
+        
+            var attributes = new Dictionary<string, object>
+            {
+                ["ErrorMessage"] = $"{records.Count(x => x.IsSuccess)} Success, {records.Count(x => !x.IsSuccess)} Failure. <br/>" + sb.ToString(),
+                ["JobStatus"] = records.Count(x => !x.IsSuccess) > 0 ? "Fail" : "Success"
+            };
+            return attributes;
+        }
+
+
+        private void ValidateRecord(AdminFeeRow record)
+        {
+            if (String.IsNullOrEmpty(record.AF_SET_NAME))
+                throw new FileUploadException("missing NET_PRICE_SET_NAME");
+            else
+            {
+                if (record.AF_SET_NAME.Length > 50)
+                {
+                    throw new FileUploadException("NET_PRICE_SET_NAME must be 50 or less characters");
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.AF_SET_DESC))
+                throw new FileUploadException("missing AF_SET_DESC");
+            else
+            {
+                if (record.AF_SET_NAME.Length > 250)
+                {
+                    throw new FileUploadException("AF_SET_DESC must be 250 or less characters");
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.TIER_SET_TYPE))
+                throw new FileUploadException("missing TIER_SET_TYPE");
+            else
+            {
+                if (!" Days Supply, Quantity".Split(',').Contains(record.TIER_SET_TYPE))
+                {
+                    throw new FileUploadException("AF_SET_DESC must be either Days Supply or Quantity");
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.AF_RULE_DESCRIPTION))
+                throw new FileUploadException("missing AF_RULE_DESCRIPTION");
+            else
+            {
+                if (record.AF_RULE_DESCRIPTION.Length > 250)
+                {
+                    throw new FileUploadException("AF_RULE_DESCRIPTION must be 250 or less characters");
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.PRODUCT_LIST))
+                throw new FileUploadException("missing PRODUCT_LIST");
+            else
+            {
+                if (record.AF_RULE_DESCRIPTION.Length > 100)
+                {
+                    throw new FileUploadException("PRODUCT_LIST must be 100 or less characters");
+                }
+                else
+                {
+                    if (GenericBO.Get<FormularyModel>(x => x.Name.Contains(record.PRODUCT_LIST)) == null)
+                    {
+                        throw new FileUploadException("Invalid PRODUCT_LIST ");
+                    }
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.MULTI_SOURCE_CODE))
+                throw new FileUploadException("missing MULTI_SOURCE_CODE");
+            else
+            {
+                MatchCollection matches = Regex.Matches(record.MULTI_SOURCE_CODE, @"[a-zA-Z0-9]*");
+                if (matches.Count == 0)
+                {
+                    throw new FileUploadException("MULTI_SOURCE_CODE Valid M O N Y");
+                }
+            }
+
+            if (String.IsNullOrEmpty(record.NETWORK_NAME))
+                throw new FileUploadException("missing NETWORK_NAME");
+            {
+                if (GenericBO.Get<NetworkModel>(x => x.Name.Contains(record.NETWORK_NAME)) == null)
+                {
+                    throw new FileUploadException("Invalid NETWORK ");
+                }
+            }
+
+            if (record.AF_TIER < 0 || record.AF_TIER > new decimal(9999999.99f))
+            {
+                throw new FileUploadException("AF_TIER must be between 0.00-9999999.99");
+            }
+
+            if (record.ADMIN_FEE < 0 || record.ADMIN_FEE > new decimal(9999999.99f))
+            {
+                throw new FileUploadException("ADMIN_FEE must be between 0.00-9999999.99");
+            }
+
+            if (string.IsNullOrEmpty(record.EFF_DATE))
+            {
+                throw new FileUploadException("EFF_DATE Date is required");
+            }
+            else
+            {
+                if (!DateTime.TryParseExact(record.EFF_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    throw new FileUploadException("Eff Date should be in yyyyMMdd format.");
+                }
+            }
+
+            if (string.IsNullOrEmpty(record.END_DATE))
+            {
+                throw new FileUploadException("End Date is required");
+            }
+            else
+            {
+                if (!DateTime.TryParseExact(record.END_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    throw new FileUploadException("End Date should be in yyyyMMdd format.");
+                }
+            }
+
+            if (string.IsNullOrEmpty(record.DATE_CONFLICT))
+            {
+                throw new FileUploadException("DATE_CONFLICT must either DEACTIVATE or END DATE");
+            }
+            else
+            {
+
+                if (!record.DATE_CONFLICT.Equals("DEACTIVATE") && !record.DATE_CONFLICT.Equals("END DATE"))
+                {
+                    throw new FileUploadException("DATE_CONFLICT must either DEACTIVATE or END DATE");
+                }
+            }
+        }
+
+    }
+}
