@@ -12,7 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9AF5506B-A9E2-4519-9D20-435E41CAF91E}"
 	ProjectSection(SolutionItems) = preProject
-		config.yml = config.yml
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
