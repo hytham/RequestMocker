@@ -9,9 +9,9 @@ jobs:
       - checkout
 
       - run:
-        name: Install Nuget packages
-        command:
-            nuget restore
+            name: Install Nuget packages
+            command:
+                nuget restore
             
             
 
