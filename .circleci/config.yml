@@ -9,16 +9,20 @@ jobs:
 
       - run:
           name: Restor packages
-          command: dotnet restore
+          command: 
+              dotnet restore
 
       - run:
           name: Build 
-          command: dotnet build
+          command: 
+              dotnet build
 
       - run:
             name: Test
-            command: dotnet test
+            command: 
+              dotnet test
 
       - run:
             name: Packing
-            command: dotnet pack
+            command: 
+              dotnet pack
