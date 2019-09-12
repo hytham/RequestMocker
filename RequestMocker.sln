@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestMockerDemo", "RequestMockerDemo\RequestMockerDemo.csproj", "{130217DE-4074-4960-991C-2D3DFD710EAF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestMocker", "RequestMocker\RequestMocker.csproj", "{B8D73631-694A-4DA0-B352-DA41EA5B7463}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8D27B55A-3209-47AA-B6F3-838C9485ED45}"
@@ -23,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{130217DE-4074-4960-991C-2D3DFD710EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{130217DE-4074-4960-991C-2D3DFD710EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{130217DE-4074-4960-991C-2D3DFD710EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{130217DE-4074-4960-991C-2D3DFD710EAF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8D73631-694A-4DA0-B352-DA41EA5B7463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8D73631-694A-4DA0-B352-DA41EA5B7463}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8D73631-694A-4DA0-B352-DA41EA5B7463}.Release|Any CPU.ActiveCfg = Release|Any CPU
